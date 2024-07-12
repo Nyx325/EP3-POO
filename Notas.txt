@@ -1,0 +1,23 @@
+1.- Identificar Modelos
+- La informacion a procesar
+    - Contacto
+        - Foto
+        - Nombre
+        - Sexo
+        - Edad 
+        - Clave (?)
+        - Lista de telefonos
+    - Telefono (Esto porque quiere info extra xd)
+        -tipo
+        -lada
+        -numero
+        
+
+2.- Identificar Controladores
+- Aquellas entidades que hacen una funcion
+    - Agenda
+        - Agregar()
+        - Eliminar()
+        - Modificar()
+        - Multiples Busquedas()
+        - Lista de contactos
