@@ -6,8 +6,9 @@ import javax.swing.table.DefaultTableModel;
 
 import Controlador.Agenda;
 import Controlador.ContactLogic;
-import Modelo.Contact;
-import Modelo.Phone;
+import Modelo.Entidad.Contact;
+import Modelo.Entidad.Phone;
+
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;

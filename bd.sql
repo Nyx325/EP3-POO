@@ -1,0 +1,19 @@
+DROP DATABASE IF EXISTS Agenda;
+CREATE DATABASE Agenda;
+    USE Agenda;
+
+CREATE TABLE Contact(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(45) NOT NULL,
+    sex VARCHAR(10) NOT NULL,
+    age VARCHAR(3) NOT NULL
+);
+
+CREATE TABLE Phone(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    number VARCHAR(45) NOT NULL,
+    lada VARCHAR(4) NOT NULL,
+    type VARCHAR(20) NOT NULL,
+    idContact INT,
+    FOREIGN KEY (idContact) REFERENCES Contact (id)
+);

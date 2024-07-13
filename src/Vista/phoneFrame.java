@@ -1,8 +1,9 @@
 package Vista;
 
 import Controlador.PhoneLogic;
-import Modelo.Contact;
-import Modelo.Phone;
+import Modelo.Entidad.Contact;
+import Modelo.Entidad.Phone;
+
 import javax.swing.JOptionPane;
 
 public class phoneFrame extends javax.swing.JFrame {
