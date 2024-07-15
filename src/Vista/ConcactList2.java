@@ -553,6 +553,7 @@ public class ConcactList2 extends javax.swing.JFrame {
     }// GEN-LAST:event_AddPhoneBtnActionPerformed
 
     private void FilterTboxKeyReleased(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_FilterTboxKeyReleased
+        /*
         String input = FilterTbox.getText();
         try {
             switch (FilterCbox.getSelectedIndex()) {
@@ -577,6 +578,8 @@ public class ConcactList2 extends javax.swing.JFrame {
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
+        */
+        search();
     }// GEN-LAST:event_FilterTboxKeyReleased
 
     private void DeleteNumberBtnActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_DeleteNumberBtnActionPerformed
@@ -881,20 +884,30 @@ public class ConcactList2 extends javax.swing.JFrame {
     private javax.swing.JTextField sexTbox;
     // End of variables declaration//GEN-END:variables
 
+    private void printC(List<Contact> l){
+        for(Contact c : l){
+            System.out.println(c);
+        }
+    }
+
     private void search() {
+        List<Contact> l = new ArrayList<>();
         String input = FilterTbox.getText();
         try {
             switch (FilterCbox.getSelectedIndex()) {
                 case 0:
-                    loadContacts(cController.searchBy("name", input));
+                    l = cController.searchBy("name", input);
                     break;
                 case 1:
-                    loadContacts(cController.searchBy("sex", input));
+                    l = cController.searchBy("sex", input);
                     break;
                 case 2:
-                    loadContacts(cController.searchBy("age", input));
+                    l = cController.searchBy("age", input);
                     break;
             }
+            System.out.println("Resultados busqueda: " + input);
+            printC(l);
+            loadContacts(l);
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(

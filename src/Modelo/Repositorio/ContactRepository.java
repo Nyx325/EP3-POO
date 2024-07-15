@@ -63,7 +63,7 @@ public class ContactRepository {
     public void update(Contact c) throws Exception {
         conector.getConnection();
         conector.pStmt = conector.conection
-                .prepareStatement("UPDATE Contact SET name = ?, SET sex = ?, SET age = ? WHERE id = ?");
+                .prepareStatement("UPDATE Contact SET name = ?, sex = ?, age = ? WHERE id = ?");
 
         conector.pStmt.setString(1, c.name);
         conector.pStmt.setString(2, c.sex);
@@ -75,13 +75,14 @@ public class ContactRepository {
 
     public List<Contact> searchBy(String option, String value) throws Exception {
         conector.getConnection();
-        conector.pStmt = conector.conection.prepareStatement("SELECT * FROM Contact WHERE " + option + " = ?");
-        conector.pStmt.setString(1, value);
+        conector.pStmt = conector.conection.prepareStatement("SELECT * FROM Contact WHERE " + option + " LIKE ? ORDER BY name");
+        conector.pStmt.setString(1, value+"%");
         conector.resSet = conector.pStmt.executeQuery();
 
         List<Contact> cList = new ArrayList<>();
         while (conector.resSet.next()) {
             Contact c = fromResSet(conector.resSet);
+            System.out.println("Creando contacto: "+c);
             cList.add(c);
         }
         return cList;
@@ -89,7 +90,7 @@ public class ContactRepository {
 
     public List<Contact> getAllContacts() throws Exception {
         conector.getConnection();
-        conector.pStmt = conector.conection.prepareStatement("SELECT * FROM Contact");
+        conector.pStmt = conector.conection.prepareStatement("SELECT * FROM Contact ORDER BY name");
         conector.resSet = conector.pStmt.executeQuery();
 
         List<Contact> cList = new ArrayList<>();

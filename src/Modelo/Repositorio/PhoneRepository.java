@@ -60,7 +60,7 @@ public class PhoneRepository {
     public void update(Phone p) throws Exception {
         conector.getConnection();
         conector.pStmt = conector.conection
-                .prepareStatement("UPDATE FROM Phone SET number = ?, SET lada = ?, SET type = ? WHERE id = ?");
+                .prepareStatement("UPDATE FROM Phone SET number = ?, lada = ?, type = ? WHERE id = ?");
 
         conector.pStmt.setString(1, p.number);
         conector.pStmt.setString(2, p.lada);
