@@ -28,15 +28,15 @@ public class ContactRepository {
     }
 
     public void delete(Contact c) throws Exception {
-        conector.getConnection();
-        conector.pStmt = conector.conection.prepareStatement("DELETE FROM Contact WHERE id = ?");
-        conector.pStmt.setLong(1, c.id);
-        conector.pStmt.executeUpdate();
-
         // Eliminar los telefonos de este contacto
         for (Phone p : c.phones) {
             pRep.delete(p);
         }
+
+        conector.getConnection();
+        conector.pStmt = conector.conection.prepareStatement("DELETE FROM Contact WHERE id = ?");
+        conector.pStmt.setLong(1, c.id);
+        conector.pStmt.executeUpdate();
     }
 
     public Contact fromResSet(ResultSet rs) throws Exception {
