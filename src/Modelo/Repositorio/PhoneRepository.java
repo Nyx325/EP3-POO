@@ -10,36 +10,36 @@ import Modelo.Entidad.Phone;
 public class PhoneRepository {
     public Connector conector;
 
-    public PhoneRepository(){
+    public PhoneRepository() {
         this.conector = new Connector();
     }
 
-    public void add(Phone p) throws Exception {
+    public void add(Phone p, long contactId) throws Exception {
         conector.getConnection();
-        conector.pStmt = conector.conection.prepareStatement("INSERT INTO Phone VALUES (0, ?, ?, ?)");
+        conector.pStmt = conector.conection.prepareStatement("INSERT INTO Phone VALUES (0, ?, ?, ?, ?)");
 
         conector.pStmt.setString(1, p.number);
         conector.pStmt.setString(2, p.lada);
         conector.pStmt.setString(3, p.type);
-        
-        conector.pStmt.executeQuery();
+        conector.pStmt.setLong(4, contactId);
+
+        conector.pStmt.executeUpdate();
     }
 
     public void delete(Phone p) throws Exception {
         conector.getConnection();
         conector.pStmt = conector.conection.prepareStatement("DELETE FROM Phone WHERE id = ?");
         conector.pStmt.setLong(1, p.id);
-        conector.pStmt.executeQuery();
+        conector.pStmt.executeUpdate();
     }
 
     public Phone fromResSet(ResultSet rs) throws Exception {
         return new Phone(
-            rs.getLong("id"),
-            rs.getString("number"),
-            rs.getString("lada"),
-            rs.getString("type"),
-            rs.getLong("idContact")
-        );
+                rs.getLong("id"),
+                rs.getString("number"),
+                rs.getString("lada"),
+                rs.getString("type"),
+                rs.getLong("idContact"));
     }
 
     public Phone searchById(long id) throws Exception {
@@ -59,14 +59,15 @@ public class PhoneRepository {
      */
     public void update(Phone p) throws Exception {
         conector.getConnection();
-        conector.pStmt = conector.conection.prepareStatement("UPDATE FROM Phone SET number = ?, SET lada = ?, SET type = ? WHERE id = ?");
+        conector.pStmt = conector.conection
+                .prepareStatement("UPDATE FROM Phone SET number = ?, SET lada = ?, SET type = ? WHERE id = ?");
 
         conector.pStmt.setString(1, p.number);
         conector.pStmt.setString(2, p.lada);
         conector.pStmt.setString(3, p.type);
         conector.pStmt.setLong(4, p.id);
-        
-        conector.pStmt.executeQuery();
+
+        conector.pStmt.executeUpdate();
     }
 
     /**
@@ -81,12 +82,12 @@ public class PhoneRepository {
         conector.resSet = conector.pStmt.executeQuery();
         /*
          * Vamos a ejecutar una query que va a retornar muchas tuplas, en
-         * nuestro resultset tiene un método llamado next() retorna un 
+         * nuestro resultset tiene un método llamado next() retorna un
          * boleano si es verdadero, actualizará el estado de este mismo
          * result set para pasar al siguiente, por lo cual utilizaremos
          * este método para iterar el resultSet
          */
-        while(conector.resSet.next()){
+        while (conector.resSet.next()) {
             Phone p = fromResSet(conector.resSet);
             pList.add(p);
         }

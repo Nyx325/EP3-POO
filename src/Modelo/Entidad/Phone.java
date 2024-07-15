@@ -7,7 +7,16 @@ public class Phone {
     public String type;
     public long idContact;
 
-    public Phone(){}
+    public Phone() {
+    }
+
+    public Phone(String number, String lada, String type) {
+        this.id = -1;
+        this.number = number;
+        this.lada = lada;
+        this.type = type;
+        this.idContact = -1;
+    }
 
     public Phone(long id, String number, String lada, String type, long idContact) {
         this.id = id;

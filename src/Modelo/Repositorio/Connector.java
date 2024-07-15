@@ -14,7 +14,7 @@ public class Connector {
 
     public Connection getConnection() throws Exception {
         Class.forName("com.mysql.jdbc.Driver");
-        String servidor = "jdbc:mysql://localhost:3306/practica1?characterEncoding=UTF-8";
+        String servidor = "jdbc:mysql://localhost:3306/Agenda?characterEncoding=UTF-8";
         String usr = "rubenor";
         String pwd = "archsudoloco";
         this.conection = DriverManager.getConnection(servidor, usr, pwd);

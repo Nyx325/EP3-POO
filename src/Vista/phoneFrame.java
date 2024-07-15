@@ -1,20 +1,20 @@
 package Vista;
 
-import Controlador.PhoneLogic;
+import Controlador.PhoneController;
 import Modelo.Entidad.Contact;
 import Modelo.Entidad.Phone;
 
 import javax.swing.JOptionPane;
 
 public class phoneFrame extends javax.swing.JFrame {
-    PhoneLogic pLogic;
+    PhoneController pController;
     ConcactList2 cList;
     /**
      * Creates new form phoneFrame
      */
     public phoneFrame(ConcactList2 cList) {
         initComponents();
-        this.pLogic = new PhoneLogic();
+        pController = new PhoneController();
         this.cList = cList;
     }
 
@@ -139,15 +139,14 @@ public class phoneFrame extends javax.swing.JFrame {
         );
         
         try{
-            this.pLogic.check(p);
-            this.
-            cList.getLastContactSel().getPhones().add(p);
-            cList.loadPhones(cList.getLastContactSel().getPhones());
+            pController.add(p, cList.getLastContactSel().id);
+            cList.getLastContactSel().phones.add(p);
+            cList.loadPhones(pController.searchByContact(cList.getLastContactSel()));
             JOptionPane.showMessageDialog(null, "Se agregó el número correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             this.hide();
             this.resetForm();
         }catch(Exception e){
-            System.out.println(e.getStackTrace());
+            e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
         

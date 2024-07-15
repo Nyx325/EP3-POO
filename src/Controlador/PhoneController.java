@@ -6,7 +6,7 @@ import Modelo.Entidad.Contact;
 import Modelo.Entidad.Phone;
 import Modelo.Repositorio.PhoneRepository;
 
-public class PhoneController {
+public class PhoneController extends Controller {
     PhoneRepository repo;
     
     public PhoneController(){
@@ -19,25 +19,6 @@ public class PhoneController {
 
     public List<Phone> searchByContact(Contact c) throws Exception {
         return repo.searchByContact(c);
-    }
-
-    protected boolean isJustNumers(String str){
-        for(char c : str.toCharArray()){
-            if(!Character.isDigit(c))
-                return false;
-        }
-        
-        return true;
-    }
-
-    protected boolean containsNumbers(String str){
-        for(char c : str.toCharArray()){
-            if(Character.isDigit(c)){
-                return true;
-            }
-        }
-        
-        return false;
     }
 
     public void validPhone(Phone p) throws Exception {
@@ -68,9 +49,9 @@ public class PhoneController {
         }
     }
 
-    public void add(Phone p) throws Exception {
+    public void add(Phone p, long contactId) throws Exception {
         validPhone(p);
-        repo.add(p);
+        repo.add(p, contactId);
     }
 
     public void delete(Phone p) throws Exception{

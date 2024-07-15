@@ -4,12 +4,13 @@ import java.util.ArrayList;
 
 import javax.swing.table.DefaultTableModel;
 
-import Controlador.Agenda;
-import Controlador.ContactLogic;
+import Controlador.ContactController;
+import Controlador.PhoneController;
 import Modelo.Entidad.Contact;
 import Modelo.Entidad.Phone;
 
 import java.awt.Image;
+import java.util.List;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
@@ -21,8 +22,8 @@ import javax.swing.plaf.FileChooserUI;
 
 public class ConcactList2 extends javax.swing.JFrame {
     // Controlers
-    private Agenda agenda;
-    private ContactLogic cLogic;
+    ContactController cController;
+    PhoneController pController;
     // Variables
     private JFileChooser fc;
     private boolean adding;
@@ -32,7 +33,7 @@ public class ConcactList2 extends javax.swing.JFrame {
     private boolean cleanerNamebox;
     private phoneFrame pFrame;
     private Contact lastContactSel;
-    private ArrayList<Contact> lastListUsed;
+    private List<Contact> lastListUsed;
     private int clickOnPhoneDone;
     private int lastPhoneIndex;
 
@@ -41,11 +42,8 @@ public class ConcactList2 extends javax.swing.JFrame {
      */
     public ConcactList2() {
         initComponents();
-        this.cLogic = new ContactLogic();
-        this.agenda = new Agenda();
-        agenda.sortContacts();
-        this.loadContacts(agenda.getContacts());
-        this.lastListUsed = agenda.getContacts();
+        cController = new ContactController();
+        pController = new PhoneController();
         this.cleanerTbox = true;
         this.modifyMode = false;
         this.FilterTbox.setText("Buscar por nombre...");
@@ -57,22 +55,32 @@ public class ConcactList2 extends javax.swing.JFrame {
         this.adding = false;
         this.clickOnPhoneDone = 0;
         this.lastPhoneIndex = -1;
-        
+
         this.fc = new JFileChooser();
         fc.setFileFilter(
-            new FileNameExtensionFilter(
-      "Imágenes", 
-       "png", 
-       "jpg",
-       "jpeg"
-            )
-        );
+                new FileNameExtensionFilter(
+                        "Imágenes",
+                        "png",
+                        "jpg",
+                        "jpeg"));
+
+        try {
+            this.lastListUsed = cController.getAllContacts();
+            this.loadContacts(lastListUsed);
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Error: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
 
-    public Contact getLastContactSel(){
+    public Contact getLastContactSel() {
         return this.lastContactSel;
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -80,7 +88,8 @@ public class ConcactList2 extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
@@ -121,30 +130,27 @@ public class ConcactList2 extends javax.swing.JFrame {
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel1)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
         jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel1)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
         jPanel2.setBackground(new java.awt.Color(224, 219, 232));
 
         contactsTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+                new Object[][] {
 
-            },
-            new String [] {
-                "Contactos"
-            }
-        ));
+                },
+                new String[] {
+                        "Contactos"
+                }));
         contactsTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 contactsTableMouseClicked(evt);
@@ -192,40 +198,49 @@ public class ConcactList2 extends javax.swing.JFrame {
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 441, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(124, 124, 124)
-                        .addComponent(AddContactBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(DeleteContactBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(FilterCbox, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(FilterTbox)))
-                .addContainerGap())
-        );
+                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                                jPanel2Layout.createSequentialGroup()
+                                                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                Short.MAX_VALUE)
+                                                        .addComponent(jScrollPane1,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE, 441,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(jPanel2Layout.createSequentialGroup()
+                                                .addGap(124, 124, 124)
+                                                .addComponent(AddContactBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 99,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(DeleteContactBtn, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(0, 0, Short.MAX_VALUE))
+                                        .addGroup(jPanel2Layout.createSequentialGroup()
+                                                .addContainerGap()
+                                                .addComponent(FilterCbox, javax.swing.GroupLayout.PREFERRED_SIZE, 96,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(FilterTbox)))
+                                .addContainerGap()));
         jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(FilterCbox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(FilterTbox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(AddContactBtn)
-                    .addComponent(DeleteContactBtn))
-                .addContainerGap())
-        );
+                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(FilterCbox, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(FilterTbox, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(AddContactBtn)
+                                        .addComponent(DeleteContactBtn))
+                                .addContainerGap()));
 
         jPanel3.setBackground(new java.awt.Color(41, 47, 54));
 
@@ -279,80 +294,87 @@ public class ConcactList2 extends javax.swing.JFrame {
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(PFPLabel)
-                .addGap(62, 62, 62))
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(108, 108, 108)
-                .addComponent(ChangePFPBtn)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(3, 3, 3)
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ageTbox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(sexTbox, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(nameTbox)))
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addComponent(AceptContactBtn)
-                        .addGap(18, 18, 18)
-                        .addComponent(CancelContactBtn)
-                        .addGap(72, 72, 72))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addComponent(ModifyBtn)
-                        .addGap(122, 122, 122))))
-        );
+                jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(PFPLabel)
+                                .addGap(62, 62, 62))
+                        .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(108, 108, 108)
+                                .addComponent(ChangePFPBtn)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addGroup(jPanel3Layout.createSequentialGroup()
+                                                .addGap(3, 3, 3)
+                                                .addComponent(jLabel3)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(ageTbox)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(jLabel4)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(sexTbox, javax.swing.GroupLayout.PREFERRED_SIZE, 118,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(jPanel3Layout.createSequentialGroup()
+                                                .addContainerGap()
+                                                .addComponent(jLabel2)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(nameTbox)))
+                                .addContainerGap())
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                                jPanel3Layout.createSequentialGroup()
+                                                        .addComponent(AceptContactBtn)
+                                                        .addGap(18, 18, 18)
+                                                        .addComponent(CancelContactBtn)
+                                                        .addGap(72, 72, 72))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                                jPanel3Layout.createSequentialGroup()
+                                                        .addComponent(ModifyBtn)
+                                                        .addGap(122, 122, 122)))));
         jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(PFPLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ChangePFPBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(nameTbox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(ageTbox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4)
-                    .addComponent(sexTbox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ModifyBtn)
-                .addGap(3, 3, 3)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(CancelContactBtn)
-                    .addComponent(AceptContactBtn))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+                jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(PFPLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 167,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(ChangePFPBtn)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel2)
+                                        .addComponent(nameTbox, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel3)
+                                        .addComponent(ageTbox, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel4)
+                                        .addComponent(sexTbox, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(ModifyBtn)
+                                .addGap(3, 3, 3)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(CancelContactBtn)
+                                        .addComponent(AceptContactBtn))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
         jPanel4.setBackground(new java.awt.Color(41, 47, 54));
 
         phonesTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+                new Object[][] {
 
-            },
-            new String [] {
-                "Tipo", "Numero"
-            }
-        ));
+                },
+                new String[] {
+                        "Tipo", "Numero"
+                }));
         phonesTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 phonesTableMouseClicked(evt);
@@ -382,384 +404,413 @@ public class ConcactList2 extends javax.swing.JFrame {
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(AddPhoneBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(DeleteNumberBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(62, 62, 62))
-        );
+                jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                                .addContainerGap())
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(AddPhoneBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 99,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(DeleteNumberBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 99,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(62, 62, 62)));
         jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(AddPhoneBtn)
-                    .addComponent(DeleteNumberBtn))
-                .addContainerGap())
-        );
+                jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 110,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(AddPhoneBtn)
+                                        .addComponent(DeleteNumberBtn))
+                                .addContainerGap()));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(9, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(10, Short.MAX_VALUE))
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addContainerGap(9, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGroup(layout
+                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap(10, Short.MAX_VALUE)));
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addContainerGap()));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void contactsTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_contactsTableMouseClicked
+    private void contactsTableMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_contactsTableMouseClicked
         int index = this.contactsTable.getSelectedRow();
         Contact c = lastListUsed.get(index);
-        
-        this.nameTbox.setText(c.getName());
-        this.ageTbox.setText(c.getAge());
-        this.sexTbox.setText(c.getSex());
-        loadPhones(c.getPhones());
-        
+
+        this.nameTbox.setText(c.name);
+        this.ageTbox.setText(c.age);
+        this.sexTbox.setText(c.sex);
+        loadPhones(c.phones);
+
         this.lastContactSel = c;
-        
+
         // Actualizar imagen
-        try{
+        try {
             File file = new File("./src/Vista/images/contacto-icon.png");
             Image img = ImageIO.read(file);
             Image scaledImg = img.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
             PFPLabel.setIcon(new ImageIcon(scaledImg));
-        }
-        catch(IOException e){
-            JOptionPane.showMessageDialog(
-                null, 
-                "Error al cargar la foto de perfil "+e.getMessage(), 
-                "Error", 
-                JOptionPane.ERROR_MESSAGE
-            );
+        } catch (IOException e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Error al cargar la foto de perfil " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
         setModifyModeState(false);
-    }//GEN-LAST:event_contactsTableMouseClicked
+    }// GEN-LAST:event_contactsTableMouseClicked
 
-    private void FilterCboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FilterCboxActionPerformed
+    private void FilterCboxActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_FilterCboxActionPerformed
         this.cleanerTbox = true;
-        switch(FilterCbox.getSelectedIndex()){
+        switch (FilterCbox.getSelectedIndex()) {
             case 0:
                 FilterTbox.setText("Buscar por nombre...");
                 break;
             case 1:
-                 FilterTbox.setText("Buscar por Sexo...");
-                 break;   
+                FilterTbox.setText("Buscar por Sexo...");
+                break;
             case 2:
                 FilterTbox.setText("Buscar por Edad...");
                 break;
         }
-    }//GEN-LAST:event_FilterCboxActionPerformed
+    }// GEN-LAST:event_FilterCboxActionPerformed
 
-    private void FilterTboxMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_FilterTboxMouseClicked
-        if(cleanerTbox== false)
+    private void FilterTboxMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_FilterTboxMouseClicked
+        if (cleanerTbox == false)
             return;
-        
+
         FilterTbox.setText("");
-        cleanerTbox=false;
-    }//GEN-LAST:event_FilterTboxMouseClicked
+        cleanerTbox = false;
+    }// GEN-LAST:event_FilterTboxMouseClicked
 
-    private void FilterTboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FilterTboxActionPerformed
+    private void FilterTboxActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_FilterTboxActionPerformed
         search();
-    }//GEN-LAST:event_FilterTboxActionPerformed
+    }// GEN-LAST:event_FilterTboxActionPerformed
 
-    private void AddPhoneBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddPhoneBtnActionPerformed
-        if(this.lastContactSel == null){
+    private void AddPhoneBtnActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_AddPhoneBtnActionPerformed
+        if (this.lastContactSel == null) {
             JOptionPane.showMessageDialog(
-                null, 
-                "Se debe elegir un contacto", 
-                "Error", 
-                JOptionPane.ERROR_MESSAGE
-            );
-            
+                    null,
+                    "Se debe elegir un contacto",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+
             return;
         }
-            
 
-        if(lastContactSel.getPhones().size() > 4){
+        if (lastContactSel.phones.size() > 4) {
             JOptionPane.showMessageDialog(
-                null, 
-                "No se pueden agregar más números a este contacto", 
-                "Error", 
-                JOptionPane.ERROR_MESSAGE
-            );
-            
+                    null,
+                    "No se pueden agregar más números a este contacto",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+
             return;
         }
-        
+
         this.pFrame.setLocationRelativeTo(null);
         this.pFrame.show();
-    }//GEN-LAST:event_AddPhoneBtnActionPerformed
+    }// GEN-LAST:event_AddPhoneBtnActionPerformed
 
-    private void FilterTboxKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_FilterTboxKeyReleased
-        String input =FilterTbox.getText();
-        switch(FilterCbox.getSelectedIndex()){
-            case 0:
-                this.lastListUsed = agenda.searchName(input);
-                loadContacts(lastListUsed);
-                break;
-            case 1:
-                this.lastListUsed = agenda.searchSex(input);
-                loadContacts(lastListUsed);
-                break;   
-            case 2:
-                this.lastListUsed = agenda.searchAge(input);
-                loadContacts(lastListUsed);
-                break;
-        }
-    }//GEN-LAST:event_FilterTboxKeyReleased
-
-    private void DeleteNumberBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteNumberBtnActionPerformed
-        if(this.phonesTable.getSelectedRow() == -1){
+    private void FilterTboxKeyReleased(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_FilterTboxKeyReleased
+        String input = FilterTbox.getText();
+        try {
+            switch (FilterCbox.getSelectedIndex()) {
+                case 0:
+                    this.lastListUsed = cController.searchBy("name", input);
+                    loadContacts(lastListUsed);
+                    break;
+                case 1:
+                    this.lastListUsed = cController.searchBy("sex", input);
+                    loadContacts(lastListUsed);
+                    break;
+                case 2:
+                    this.lastListUsed = cController.searchBy("age", input);
+                    loadContacts(lastListUsed);
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
             JOptionPane.showMessageDialog(
-                null, 
-                "Se debe elegir un número", 
-                "Error", 
-                JOptionPane.ERROR_MESSAGE
-            );
-            
+                    null,
+                    "Error: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }// GEN-LAST:event_FilterTboxKeyReleased
+
+    private void DeleteNumberBtnActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_DeleteNumberBtnActionPerformed
+        if (this.phonesTable.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Se debe elegir un número",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+
             return;
         }
-        
-        ArrayList<Phone> pList = lastContactSel.getPhones();
-        Phone p = pList.get(phonesTable.getSelectedRow());
-        
-        
-        int response = JOptionPane.showConfirmDialog(
-                this, 
-                "¿Estás seguro que quieres eliminar el número "+p.getLada()+p.getNumber()+"?", 
-                "Confirmación", 
-                JOptionPane.YES_NO_OPTION
-        );
-        
-        // Si se selecciona sí, el valor es 0, si es no es 1, si se cierra la 
-        // ventana sin elegir es -1
-        if(response == 0){
-            pList.remove(p);
-            JOptionPane.showMessageDialog(
-                    null, 
-                    "Se eliminó el número correctamente", 
-                    "Éxito", 
-                    JOptionPane.INFORMATION_MESSAGE
-            );
-            this.loadPhones(pList);
-        }
-        
-    }//GEN-LAST:event_DeleteNumberBtnActionPerformed
 
-    private void AddContactBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddContactBtnActionPerformed
+        List<Phone> pList = lastContactSel.phones;
+        Phone p = pList.get(phonesTable.getSelectedRow());
+
+        int response = JOptionPane.showConfirmDialog(
+                this,
+                "¿Estás seguro que quieres eliminar el número " + p.lada + p.number + "?",
+                "Confirmación",
+                JOptionPane.YES_NO_OPTION);
+
+        // Si se selecciona sí, el valor es 0, si es no es 1, si se cierra la
+        // ventana sin elegir es -1
+        if (response == 0) {
+            try {
+                this.pController.delete(p);
+                pList.remove(p);
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Se eliminó el número correctamente",
+                        "Éxito",
+                        JOptionPane.INFORMATION_MESSAGE);
+                this.loadPhones(pList);
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Error: " + e.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
+    }// GEN-LAST:event_DeleteNumberBtnActionPerformed
+
+    private void AddContactBtnActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_AddContactBtnActionPerformed
         this.loadPhones(new ArrayList<>());
         this.setModifyModeState(true);
-        this.cleanerNamebox= true;
+        this.cleanerNamebox = true;
         this.nameTbox.setText("Nuevo contacto");
         this.ageTbox.setText("");
         this.sexTbox.setText("");
         this.adding = true;
         this.lastContactSel = new Contact();
-        this.confirmAdd=true;
-    }//GEN-LAST:event_AddContactBtnActionPerformed
+        this.confirmAdd = true;
+    }// GEN-LAST:event_AddContactBtnActionPerformed
 
-    private void AceptContactBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AceptContactBtnActionPerformed
-        // TODO add your handling code here:
-        try{
-            cLogic.check(new Contact(
-                nameTbox.getText().trim(),
-                 sexTbox.getText().trim(),
-                 ageTbox.getText().trim()
-                )
-            );
-            
-            this.lastContactSel.setName(nameTbox.getText().trim());
-            this.lastContactSel.setSex(sexTbox.getText().trim());
-            this.lastContactSel.setAge(ageTbox.getText().trim());
-            
-            agenda.getContacts().remove(lastContactSel);
-            agenda.getContacts().add(lastContactSel);
-            agenda.sortContacts();
+    private void AceptContactBtnActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_AceptContactBtnActionPerformed
+        try {
 
-            
             int response = JOptionPane.showConfirmDialog(
-                this, 
-                "¿Estás seguro de querer completar esta accion ", 
-                "Confirmación", 
-                JOptionPane.YES_NO_OPTION
-                );
-            
-            
-            if(response == 0){
-            
-            
+                    this,
+                    "¿Estás seguro de querer completar esta accion ",
+                    "Confirmación",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (response == 0) {
+                if (adding) {
+                    Contact c = new Contact(
+                            nameTbox.getText().trim(),
+                            sexTbox.getText().trim(),
+                            ageTbox.getText().trim());
+
+                    System.out.println(c);
+                    cController.add(c);
+                } else {
+                    Contact c = new Contact(
+                            lastContactSel.id,
+                            nameTbox.getText().trim(),
+                            sexTbox.getText().trim(),
+                            ageTbox.getText().trim(),
+                            lastContactSel.phones);
+
+                    System.out.println(c);
+                    cController.update(c);
+                    lastContactSel.name = c.name;
+                    lastContactSel.sex = c.sex;
+                    lastContactSel.age = c.age;
+                }
+
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Se realizo la tarea con exito",
+                        "Éxito",
+                        JOptionPane.INFORMATION_MESSAGE);
+
+                nameTbox.setText("");
+                sexTbox.setText("");
+                ageTbox.setText("");
+
+                var model = new DefaultTableModel(new Object[] { "Tipo", "Numero" }, 0);
+                this.phonesTable.setModel(model);
+
+                this.lastContactSel = null;
+
+                if (adding) {
+                    loadContacts(cController.getAllContacts());
+                } else {
+
+                    loadContacts(lastListUsed);
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            e.printStackTrace();
             JOptionPane.showMessageDialog(
-                    null, 
-                    "Se realizo la tarea con exito", 
-                    "Éxito", 
-                    JOptionPane.INFORMATION_MESSAGE
-            );
-
-            nameTbox.setText("");
-            sexTbox.setText("");
-            ageTbox.setText("");
-
-            var model = new DefaultTableModel(new Object[]{"Tipo", "Numero"}, 0);
-            this.phonesTable.setModel(model);
-            this.lastContactSel = null;
-
-            agenda.sortContacts();
-            loadContacts(lastListUsed);
+                    null,
+                    e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
-            
-        }catch(Exception e){
-            System.out.println("Error: "+e.getMessage());
-            System.out.println(e.getStackTrace());
-            JOptionPane.showMessageDialog(
-                null,
-                e.getMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-            );
-        }
-    }//GEN-LAST:event_AceptContactBtnActionPerformed
+    }// GEN-LAST:event_AceptContactBtnActionPerformed
 
-    private void ModifyBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ModifyBtnActionPerformed
-        if(this.lastContactSel == null){
+    private void ModifyBtnActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_ModifyBtnActionPerformed
+        if (this.lastContactSel == null) {
             JOptionPane.showMessageDialog(
-                null,
-                "Se debe elegir contacto",
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-            );
+                    null,
+                    "Se debe elegir contacto",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
 
             return;
         }
 
         setModifyModeState(true);
-    }//GEN-LAST:event_ModifyBtnActionPerformed
+    }// GEN-LAST:event_ModifyBtnActionPerformed
 
-    private void CancelContactBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelContactBtnActionPerformed
+    private void CancelContactBtnActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_CancelContactBtnActionPerformed
         this.setModifyModeState(false);
         this.nameTbox.setText("");
         this.ageTbox.setText("");
         this.sexTbox.setText("");
         this.lastContactSel = null;
-        
-        var model = new DefaultTableModel(new Object[]{"Tipo", "Numero"}, 0);
+
+        var model = new DefaultTableModel(new Object[] { "Tipo", "Numero" }, 0);
         this.phonesTable.setModel(model);
-    }//GEN-LAST:event_CancelContactBtnActionPerformed
+    }// GEN-LAST:event_CancelContactBtnActionPerformed
 
-    private void DeleteContactBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteContactBtnActionPerformed
-        if(this.contactsTable.getSelectedRow() == -1){
+    private void DeleteContactBtnActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_DeleteContactBtnActionPerformed
+        if (this.contactsTable.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(
-                null, 
-                "Se debe elegir un contacto", 
-                "Error", 
-                JOptionPane.ERROR_MESSAGE
-            );
-            
+                    null,
+                    "Se debe elegir un contacto",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+
             return;
         }
-        
+
         Contact c = lastListUsed.get(contactsTable.getSelectedRow());
-        
+
         int response = JOptionPane.showConfirmDialog(
-                this, 
-                "¿Estás seguro que quieres eliminar a "+c.getName()+"?", 
-                "Confirmación", 
-                JOptionPane.YES_NO_OPTION
-        );
-        
-        if(response == 0){
-            agenda.getContacts().remove(c);
-            lastListUsed.remove(c);
-            JOptionPane.showMessageDialog(
-                    null, 
-                    "Se eliminó el contacto correctamente", 
-                    "Éxito", 
-                    JOptionPane.INFORMATION_MESSAGE
-            );
+                this,
+                "¿Estás seguro que quieres eliminar a " + c.name + "?",
+                "Confirmación",
+                JOptionPane.YES_NO_OPTION);
 
-            nameTbox.setText("");
-            sexTbox.setText("");
-            ageTbox.setText("");
+        if (response == 0) {
+            try {
+                cController.delete(c);
+                lastListUsed.remove(c);
 
-            var model = new DefaultTableModel(new Object[]{"Tipo", "Numero"}, 0);
-            this.phonesTable.setModel(model);
-            this.lastContactSel = null;
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Se eliminó el contacto correctamente",
+                        "Éxito",
+                        JOptionPane.INFORMATION_MESSAGE);
 
-            agenda.sortContacts();
-            loadContacts(lastListUsed);
+                nameTbox.setText("");
+                sexTbox.setText("");
+                ageTbox.setText("");
+
+                var model = new DefaultTableModel(new Object[] { "Tipo", "Numero" }, 0);
+                this.phonesTable.setModel(model);
+                this.lastContactSel = null;
+
+                loadContacts(lastListUsed);
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Error: " + e.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         }
-    }//GEN-LAST:event_DeleteContactBtnActionPerformed
+    }// GEN-LAST:event_DeleteContactBtnActionPerformed
 
-    private void ChangePFPBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChangePFPBtnActionPerformed
+    private void ChangePFPBtnActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_ChangePFPBtnActionPerformed
         int selection = fc.showOpenDialog(this);
-        
-        if(selection != JFileChooser.APPROVE_OPTION){
+
+        if (selection != JFileChooser.APPROVE_OPTION) {
             return;
         }
-        
-        try{
+
+        try {
             File file = fc.getSelectedFile();
             Image img = ImageIO.read(file);
             Image scaledImg = img.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
             PFPLabel.setIcon(new ImageIcon(scaledImg));
-        }
-        catch(IOException e){
-            JOptionPane.showMessageDialog(
-                null, 
-                "Error al cargar la foto de perfil "+e.getMessage(), 
-                "Error", 
-                JOptionPane.ERROR_MESSAGE
-            );
+        } catch (IOException e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Error al cargar la foto de perfil " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
-        
-    }//GEN-LAST:event_ChangePFPBtnActionPerformed
 
-    private void nameTboxMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_nameTboxMouseClicked
-       if(cleanerNamebox== false)
+    }// GEN-LAST:event_ChangePFPBtnActionPerformed
+
+    private void nameTboxMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_nameTboxMouseClicked
+        if (cleanerNamebox == false)
             return;
-        
+
         nameTbox.setText("");
-        cleanerNamebox=false;
-    }//GEN-LAST:event_nameTboxMouseClicked
+        cleanerNamebox = false;
+    }// GEN-LAST:event_nameTboxMouseClicked
 
-    private void phonesTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_phonesTableMouseClicked
+    private void phonesTableMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_phonesTableMouseClicked
 
-    }//GEN-LAST:event_phonesTableMouseClicked
-
+    }// GEN-LAST:event_phonesTableMouseClicked
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -830,38 +881,46 @@ public class ConcactList2 extends javax.swing.JFrame {
     private javax.swing.JTextField sexTbox;
     // End of variables declaration//GEN-END:variables
 
-    private void search(){
-        String input =FilterTbox.getText();
-        switch(FilterCbox.getSelectedIndex()){
-            case 0:
-                
-                loadContacts(agenda.searchName(input));
-                break;
-            case 1:
-                 loadContacts(agenda.searchSex(input));
-                 break;   
-            case 2:
-                loadContacts(agenda.searchAge(input));
-                break;
+    private void search() {
+        String input = FilterTbox.getText();
+        try {
+            switch (FilterCbox.getSelectedIndex()) {
+                case 0:
+                    loadContacts(cController.searchBy("name", input));
+                    break;
+                case 1:
+                    loadContacts(cController.searchBy("sex", input));
+                    break;
+                case 2:
+                    loadContacts(cController.searchBy("age", input));
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Error: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
-    
-    private void loadContacts(ArrayList<Contact> list){
-        DefaultTableModel model = new DefaultTableModel(new Object[]{"Contactos"}, 0);
 
-        for(Contact c : list){
-            Object[] newRow = {c.getName()};
+    private void loadContacts(List<Contact> list) {
+        DefaultTableModel model = new DefaultTableModel(new Object[] { "Contactos" }, 0);
+
+        for (Contact c : list) {
+            Object[] newRow = { c.name };
             model.addRow(newRow);
         }
 
         this.contactsTable.setModel(model);
     }
 
-    public void loadPhones(ArrayList<Phone> phones){
-        var model = new DefaultTableModel(new Object[]{"Tipo", "Numero"}, 0);
+    public void loadPhones(List<Phone> phones) {
+        var model = new DefaultTableModel(new Object[] { "Tipo", "Numero" }, 0);
 
-        for(Phone p : phones){
-            Object[] newRow = {p.getTipo(), p.getLada()+" "+p.getNumber()};
+        for (Phone p : phones) {
+            Object[] newRow = { p.type, p.lada + " " + p.number };
             model.addRow(newRow);
         }
 
@@ -870,12 +929,12 @@ public class ConcactList2 extends javax.swing.JFrame {
 
     /**
      * @param state verdadero es igual a tbox editables y leyenda
-     * aceptar en boton, falso es igual a tbox no editables y leyenda
-     * modificar
+     *              aceptar en boton, falso es igual a tbox no editables y leyenda
+     *              modificar
      */
-    private void setModifyModeState(boolean state){
+    private void setModifyModeState(boolean state) {
         modifyMode = state;
-        
+
         if (state) {
             ModifyBtn.hide();
             AceptContactBtn.show();
@@ -883,8 +942,7 @@ public class ConcactList2 extends javax.swing.JFrame {
             nameTbox.setEditable(true);
             sexTbox.setEditable(true);
             ageTbox.setEditable(true);
-        }
-        else{
+        } else {
             ModifyBtn.show();
             AceptContactBtn.hide();
             CancelContactBtn.hide();
