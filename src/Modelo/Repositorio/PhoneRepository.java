@@ -70,9 +70,6 @@ public class PhoneRepository {
         conector.pStmt.executeUpdate();
     }
 
-    /**
-     * Obtener
-     */
     public List<Phone> searchByContact(Contact c) throws Exception {
         List<Phone> pList = new ArrayList<>();
 
@@ -93,5 +90,10 @@ public class PhoneRepository {
         }
 
         return pList;
+    }
+
+    public ResultSet phonesByCategory() throws Exception {
+        conector.pStmt = conector.getConnection().prepareStatement("SELECT COUNT(type), type FROM Phone GROUP BY type");
+        return conector.pStmt.executeQuery();
     }
 }

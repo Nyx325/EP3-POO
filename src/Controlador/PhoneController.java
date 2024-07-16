@@ -2,6 +2,8 @@ package Controlador;
 
 import java.util.List;
 
+import java.sql.ResultSet;
+
 import Modelo.Entidad.Contact;
 import Modelo.Entidad.Phone;
 import Modelo.Repositorio.PhoneRepository;
@@ -61,5 +63,9 @@ public class PhoneController extends Controller {
     public void update(Phone p) throws Exception {
         validPhone(p);
         repo.update(p);
+    }
+
+    public ResultSet phonesByCategory() throws Exception {
+        return repo.phonesByCategory();
     }
 }

@@ -1,5 +1,6 @@
 package Vista;
 
+import Controlador.ChartController;
 import java.util.ArrayList;
 
 import javax.swing.table.DefaultTableModel;
@@ -10,20 +11,25 @@ import Modelo.Entidad.Contact;
 import Modelo.Entidad.Phone;
 
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.FileChooserUI;
+import org.jfree.data.category.DefaultCategoryDataset;
 
 public class ConcactList2 extends javax.swing.JFrame {
     // Controlers
     ContactController cController;
     PhoneController pController;
+    ChartController chartC;
     // Variables
     private JFileChooser fc;
     private boolean adding;
@@ -55,6 +61,8 @@ public class ConcactList2 extends javax.swing.JFrame {
         this.adding = false;
         this.clickOnPhoneDone = 0;
         this.lastPhoneIndex = -1;
+        iniciarlizarMenu();
+        this.chartC = new ChartController();
 
         this.fc = new JFileChooser();
         fc.setFileFilter(
@@ -92,6 +100,7 @@ public class ConcactList2 extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        ChartsMenu = new javax.swing.JPopupMenu();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
@@ -200,6 +209,11 @@ public class ConcactList2 extends javax.swing.JFrame {
         });
 
         MoreBtn.setText("...");
+        MoreBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MoreBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -457,6 +471,10 @@ public class ConcactList2 extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void MoreBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MoreBtnActionPerformed
+        ChartsMenu.show(MoreBtn, MoreBtn.getWidth()/2, MoreBtn.getHeight()/2);
+    }//GEN-LAST:event_MoreBtnActionPerformed
 
     private void contactsTableMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_contactsTableMouseClicked
         int index = this.contactsTable.getSelectedRow();
@@ -847,6 +865,7 @@ public class ConcactList2 extends javax.swing.JFrame {
     private javax.swing.JButton AddPhoneBtn;
     private javax.swing.JButton CancelContactBtn;
     private javax.swing.JButton ChangePFPBtn;
+    private javax.swing.JPopupMenu ChartsMenu;
     private javax.swing.JButton DeleteContactBtn;
     private javax.swing.JButton DeleteNumberBtn;
     private javax.swing.JComboBox<String> FilterCbox;
@@ -950,5 +969,58 @@ public class ConcactList2 extends javax.swing.JFrame {
             sexTbox.setEditable(false);
             ageTbox.setEditable(false);
         }
+    }
+    
+    public void iniciarlizarMenu(){
+        String opc1Title = "Grafica numeros por contacto";
+        String opc2Title = "Grafica por categorias";
+        String opc3Title = "Grafica de cada usuario según cantidad de telefonos";
+        JMenuItem opc1 = new JMenuItem(opc1Title);
+        JMenuItem opc2 = new JMenuItem(opc2Title);
+        JMenuItem opc3 = new JMenuItem(opc3Title);
+        
+        ChartsMenu.add(opc1);
+        ChartsMenu.addSeparator();
+        ChartsMenu.add(opc2);
+        ChartsMenu.addSeparator();
+        ChartsMenu.add(opc3);
+        
+        // Agregar eventos para las opciones
+        opc1.addActionListener(new ActionListener () {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                chartC.genGraph1();
+            }
+        });
+        
+        opc2.addActionListener(new ActionListener () {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                chartC.genGraph2();
+            }
+        });
+        
+        opc3.addActionListener(new ActionListener () {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                chartC.genGraph3();
+            }
+        });
+    }
+    
+    public void crearGrafica1(){
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        dataset.addValue(1, "Category 1", "A");
+        dataset.addValue(3, "Category 1", "B");
+        dataset.addValue(4, "Category 2", "A");
+        dataset.addValue(5, "Category 2", "B");
+    }
+    
+    public void crearGrafica2(){
+        
+    }
+    
+    public void crearGrafica3(){
+        
     }
 }
