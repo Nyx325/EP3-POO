@@ -1,0 +1,19 @@
+<mxfile host="Electron" modified="2024-07-17T22:56:02.991Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.6.1 Chrome/124.0.6367.243 Electron/30.1.2 Safari/537.36" etag="QL510OXSJGtaxmyLfQww" version="24.6.1" type="device">
+  <diagram name="Página-1" id="EFKo_zP-QpHvKHFFVJdx">
+    <mxGraphModel dx="837" dy="521" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="dpD7loJlFiz2zb1GrCrO-1" value="Agregar contacto" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-160" y="30" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="dpD7loJlFiz2zb1GrCrO-2" value="Recibe objeto de tipo Contacto" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-30" y="30" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="dpD7loJlFiz2zb1GrCrO-5" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-160" y="90" width="120" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
