@@ -32,17 +32,33 @@ public class ChartController {
         this.chartView = new ChartView();
     }
 
-    public void createChart(DefaultCategoryDataset dataSet, String chartTitle, String titleXAxis, String titleYAxis) {
-        JFreeChart chart = ChartFactory.createBarChart3D(
-                chartTitle, // Nombre del grafico
-                titleXAxis, // Nombre de las barras (eje x)
-                titleYAxis, // Nombre de los valores (eje y)
-                dataSet, // Datos del grafico
-                PlotOrientation.VERTICAL, // Orientación
-                true, // Leyenda para los valores en barra (individuales)
-                false, // Herramientas
-                false // URL del gráfico
-        );
+    public void createChart(DefaultCategoryDataset dataSet, String chartTitle, String titleXAxis, String titleYAxis,
+            int type) {
+        JFreeChart chart;
+        if (type == 0) {
+            chart = ChartFactory.createBarChart3D(
+                    chartTitle, // Nombre del grafico
+                    titleXAxis, // Nombre de las barras (eje x)
+                    titleYAxis, // Nombre de los valores (eje y)
+                    dataSet, // Datos del grafico
+                    PlotOrientation.VERTICAL, // Orientación
+                    true, // Leyenda para los valores en barra (individuales)
+                    false, // Herramientas
+                    false // URL del gráfico
+            );
+        }
+        else{
+            chart = ChartFactory.createLineChart(
+                    chartTitle, // Nombre del grafico
+                    titleXAxis, // Nombre de las barras (eje x)
+                    titleYAxis, // Nombre de los valores (eje y)
+                    dataSet, // Datos del grafico
+                    PlotOrientation.VERTICAL, // Orientación
+                    true, // Leyenda para los valores en barra (individuales)
+                    false, // Herramientas
+                    false // URL del gráfico
+            );
+        }
 
         // Personaliza el eje X
         CategoryPlot plot = chart.getCategoryPlot();
@@ -63,7 +79,7 @@ public class ChartController {
                                                                          // disponible
         chartView.getPanelCharts().revalidate();
         chartView.getPanelCharts().repaint();
-        chartView.show();
+        chartView.setVisible(true);
     }
 
     // Mostrar la cantidad de telefonos por cada usuario
@@ -73,10 +89,10 @@ public class ChartController {
             DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
 
             for (Contact c : contacts) {
-                dataSet.setValue(c.phones.size(), "phones", c.name);
+                dataSet.setValue(c.phones.size(), "telefonos", c.name);
             }
 
-            createChart(dataSet, "Cantidad de telefonos por cada usuario", "Contactos", "Cantidad de numeros");
+            createChart(dataSet, "Cantidad de telefonos por cada usuario", "Contactos", "Cantidad de numeros", 0);
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(
@@ -99,7 +115,7 @@ public class ChartController {
                         rs.getString(2));
             }
 
-            createChart(dataSet, "Teléfonos por categoría", "Categoria", "Cantidad");
+            createChart(dataSet, "Teléfonos por categoría", "Categoria", "Cantidad", 0);
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(
@@ -111,6 +127,22 @@ public class ChartController {
     }
 
     public void genGraph3() {
+        try {
+            List<Contact> contacts = contactC.getAllContacts();
+            DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
 
+            for (Contact c : contacts) {
+                dataSet.setValue(c.phones.size(), "telefonos", c.name);
+            }
+
+            createChart(dataSet, "Cantidad de telefonos por cada usuario", "Contactos", "Cantidad de numeros", 1);
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Error al cargar la foto de perfil " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
